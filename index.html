@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sorpresa para alguien especial</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      font-family: 'Arial', sans-serif;
+      background: black;
+    }
+
+    video.video-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: 0;
+    }
+
+    .content {
+      position: relative;
+      z-index: 3;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .content img {
+      max-width: 30%;
+      max-height: 50%;
+      animation: pulse 8s infinite ease-in-out;
+      pointer-events: none;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.08);
+      }
+    }
+
+    #music-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 4;
+      background-color: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: pink;
+      font-size: 1.8rem;
+      padding: 10px 15px;
+      border-radius: 50%;
+      cursor: pointer;
+      backdrop-filter: blur(5px);
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    #music-toggle:hover {
+      background-color: rgba(255, 192, 203, 0.4);
+      transform: scale(1.1);
+    }
+
+    .rain-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 2;
+      overflow: hidden;
+    }
+
+    .drop {
+      position: absolute;
+      opacity: 0.9;
+      white-space: nowrap;
+      text-shadow: 0 0 5px black;
+      animation-name: fall, sway;
+      animation-timing-function: linear;
+      animation-fill-mode: forwards;
+      animation-iteration-count: 1, infinite;
+    }
+
+    @keyframes fall {
+      0% {
+        top: -5%;
+        opacity: 1;
+      }
+      100% {
+        top: 110vh;
+        opacity: 0;
+      }
+    }
+
+    @keyframes sway {
+      0%   { transform: translateX(0); }
+      25%  { transform: translateX(15px); }
+      50%  { transform: translateX(-15px); }
+      75%  { transform: translateX(10px); }
+      100% { transform: translateX(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Video de fondo -->
+  <video class="video-background" autoplay loop muted playsinline>
+    <source src="215697.mp4" type="video/mp4">
+    Tu navegador no soporta videos HTML5.
+  </video>
+
+  <!-- Música -->
+  <audio id="bg-music" loop>
+    <source src="linda-muchachita.mp3" type="audio/mpeg">
+    Tu navegador no soporta audio HTML5.
+  </audio>
+
+  <!-- Botón de música -->
+  <button id="music-toggle">🔊</button>
+
+  <!-- Imagen central -->
+  <div class="content">
+    <img src="ChatGPT Image 18 jun 2025, 17_56_11.png" alt="Sorpresa Especial" />
+  </div>
+
+  <!-- Lluvia de palabras -->
+  <div class="rain-container" id="rain-container"></div>
+
+  <script>
+    // Música
+    const music = document.getElementById('bg-music');
+    const toggle = document.getElementById('music-toggle');
+    let isPlaying = false;
+
+    toggle.addEventListener('click', () => {
+      if (isPlaying) {
+        music.pause();
+        toggle.textContent = '🔇';
+      } else {
+        music.play();
+        toggle.textContent = '🎀';
+      }
+      isPlaying = !isPlaying;
+    });
+
+    // Mensajes y emojis
+    const mensajes = [
+      "Eres mi luz", "Belleza pura", "Mi fantasía", "Eres la mejor",
+      "Eres mi razón", "Eres especial", "Mi alegría diaria", "Mi universo",
+      "Mi princesa", "Dulzura infinita", "Encanto total", "Mi ternura",
+      "Mi inspiración", "Mi sol radiante", "Reina de mi vida", "Mi todo",
+      "Perfecta para mí", "Dueña de mi sonrisa", "La más hermosa",
+      "Mi paz", "Mi felicidad", "Mi amor eterno", "Siempre tú", "Única y hermosa",
+      "Amor en cada gesto", "Cielo en la Tierra", "Mi corazón te pertenece",
+      "💖", "💗", "💞", "💕", "💓", "💘", "💝", "❤️", "🧡", "💛", "💜", "💙", "🩷",
+      "🌷", "🌸", "🌹", "🌺", "🌼", "🥰", "😘", "😍", "😊", "😚", "🤭", "🤍",
+      "👑", "✨", "⭐", "🌟", "💫", "🎀", "💐", "🦋", "🌈", "☁️"
+    ];
+
+    const colores = [
+      "#ff69b4", "#ff1493", "#ff6ec7", "#ffb6c1", "#db7093", "#c71585",
+      "#e75480", "#ff007f", "#d87093", "#ff0000", "#dc143c", "#800080"
+    ];
+
+    const rainContainer = document.getElementById("rain-container");
+
+    function crearLluvia() {
+      const span = document.createElement("span");
+      span.classList.add("drop");
+      span.textContent = mensajes[Math.floor(Math.random() * mensajes.length)];
+
+      span.style.left = Math.random() * 100 + "vw";
+      span.style.fontSize = (Math.random() * 1 + 0.7) + "rem"; // tamaño reducido
+      span.style.animationDuration = `${Math.random() * 4 + 4}s, 2s`;
+      span.style.color = colores[Math.floor(Math.random() * colores.length)];
+
+      rainContainer.appendChild(span);
+
+      setTimeout(() => {
+        span.remove();
+      }, 10000);
+    }
+
+    // Aparece más seguido (cada 100 ms)
+    setInterval(crearLluvia, 100);
+  </script>
+
+</body>
+</html>
